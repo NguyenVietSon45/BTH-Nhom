@@ -60,40 +60,7 @@ class News {
         $this->category_id = $category_id;
     }
 
-    // Method to save the news article to the database
-    public function save($conn) {
-        if ($this->id === null) {
-            // Insert new news article
-            $stmt = $conn->prepare("INSERT INTO news (title, content, image, created_at, category_id) VALUES (:title, :content, :image, :created_at, :category_id)");
-            $stmt->bindParam(':title', $this->title);
-            $stmt->bindParam(':content', $this->content);
-            $stmt->bindParam(':image', $this->image);
-            $stmt->bindParam(':created_at', $this->created_at);
-            $stmt->bindParam(':category_id', $this->category_id);
-            $stmt->execute();
-            $this->id = $conn->lastInsertId(); // Get the last inserted ID
-        } else {
-            // Update existing news article
-            $stmt = $conn->prepare("UPDATE news SET title = :title, content = :content, image = :image, created_at = :created_at, category_id = :category_id WHERE id = :id");
-            $stmt->bindParam(':title', $this->title);
-            $stmt->bindParam(':content', $this->content);
-            $stmt->bindParam(':image', $this->image);
-            $stmt->bindParam(':created_at', $this->created_at);
-            $stmt->bindParam(':category_id', $this->category_id);
-            $stmt->bindParam(':id', $this->id);
-            $stmt->execute();
-        }
-    }
-
-    // Method to delete the news article from the database
-    public function delete($conn) {
-        if ($this->id !== null) {
-            $stmt = $conn->prepare("DELETE FROM news WHERE id = :id");
-            $stmt->bindParam(':id', $this->id);
-            $stmt->execute();
-            $this->id = null; // Reset ID after deletion
-        }
-    }
+    
 }
 
 // Example of creating a new news article
