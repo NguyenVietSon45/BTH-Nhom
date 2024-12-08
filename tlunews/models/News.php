@@ -1,68 +1,48 @@
 <?php
-
 class News {
-    private $id;
-    private $title;
-    private $content;
-    private $image;
-    private $created_at;
-    private $category_id;
+    private $db;
 
-    // Constructor to initialize the News object
-    public function __construct($id, $title, $content, $image, $created_at, $category_id) {
-        $this->id = $id;
-        $this->title = $title;
-        $this->content = $content;
-        $this->image = $image;
-        $this->created_at = $created_at ?: date('Y-m-d H:i:s'); // Set to current time if null
-        $this->category_id = $category_id;
+    public function __construct($db) {
+        $this->db = $db;
     }
 
-    // Getters
-    public function getId() {
-        return $this->id;
+    public function getAllNews() {
+        $stmt = $this->db->prepare("SELECT * FROM news");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getTitle() {
-        return $this->title;
+    public function getNewsById($id) {
+        $stmt = $this->db->prepare("SELECT * FROM news WHERE id = ?");
+        $stmt->execute([$id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function getContent() {
-        return $this->content;
+    public function getNewsByCategory($category_id) {
+        $stmt = $this->db->prepare("SELECT * FROM news WHERE category_id = ?");
+        $stmt->execute([$category_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-
-    public function getImage() {
-        return $this->image;
+    
+    public function searchNews($keyword) {
+        $stmt = $this->db->prepare("SELECT * FROM news WHERE title LIKE ? OR content LIKE ?");
+        $likeKeyword = '%' . $keyword . '%';
+        $stmt->execute([$likeKeyword, $likeKeyword]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-
-    public function getCreatedAt() {
-        return $this->created_at;
+    
+    public function getPaginatedNews($limit, $offset) {
+        $stmt = $this->db->prepare("SELECT * FROM news LIMIT ? OFFSET ?");
+        $stmt->bindValue(1, $limit, PDO::PARAM_INT);
+        $stmt->bindValue(2, $offset, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-
-    public function getCategoryId() {
-        return $this->category_id;
+    
+    public function getTotalNewsCount() {
+        $stmt = $this->db->query("SELECT COUNT(*) as total FROM news");
+        return $stmt->fetch(PDO::FETCH_ASSOC)['total'];
     }
-
-    // Setters
-    public function setTitle($title) {
-        $this->title = $title;
-    }
-
-    public function setContent($content) {
-        $this->content = $content;
-    }
-
-    public function setImage($image) {
-        $this->image = $image;
-    }
-
-    public function setCategoryId($category_id) {
-        $this->category_id = $category_id;
-    }
-
     
 }
-
-// Example of creating a new news article
-$newNews = new News(null, 'Sample News Title', 'This is the content of the news.', 'image.jpg', null, 1);
 ?>
