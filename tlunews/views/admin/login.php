@@ -1,50 +1,43 @@
 <?php
 session_start();
 
-// Thông tin kết nối
-$servername = "localhost"; // Địa chỉ máy chủ
-$username = "root"; // Tên đăng nhập MySQL
-$password = ""; // Mật khẩu MySQL
-$dbname = "users"; // Tên cơ sở dữ liệu
+$servername = "localhost"; 
+$username = "root"; 
+$password = ""; 
+$dbname = "users"; 
 
-// Tạo kết nối
+
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-// Kiểm tra kết nối
 if ($conn->connect_error) {
     die("Kết nối thất bại: " . $conn->connect_error);
 }
 
-// Xử lý đăng nhập
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Lấy dữ liệu từ form
     $username = $_POST['username'];
-    $password_input = $_POST['password']; // Tên biến đã thay đổi
+    $password_input = $_POST['password']; 
 
-    // Truy vấn để lấy thông tin người dùng
     $stmt = $conn->prepare("SELECT password, role FROM users WHERE username = ?");
     $stmt->bind_param("s", $username);
     $stmt->execute();
     $stmt->store_result();
 
-    // Kiểm tra xem người dùng có tồn tại không
     if ($stmt->num_rows > 0) {
-        $stmt->bind_result($stored_password, $role); // Lưu mật khẩu từ CSDL vào biến
+        $stmt->bind_result($stored_password, $role); 
         $stmt->fetch();
 
-        // So sánh mật khẩu trực tiếp
+       
         if ($password_input === $stored_password) {
-            // Đăng nhập thành công
             $_SESSION['username'] = $username;
-            $_SESSION['role'] = $role; // Lưu vai trò người dùng vào session
+            $_SESSION['role'] = $role; 
             
-            // Chuyển hướng đến dashboard nếu là quản trị viên
             if ($role == 1) {
-                header("Location: dashboard.php"); // Đường dẫn đến trang dashboard
-                exit(); // Ngừng thực thi script sau khi chuyển hướng
+                header("Location: dashboard.php"); 
+                exit(); 
             } else {
                 echo "Đăng nhập thành công! Chào mừng, " . htmlspecialchars($username);
-                // Bạn có thể chuyển hướng đến trang người dùng nếu cần
+                header("Location: home/index.php");
+                exit();
             }
         } else {
             echo "Mật khẩu không đúng.";
