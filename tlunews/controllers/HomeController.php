@@ -15,15 +15,14 @@ class HomeController {
         $itemsPerPage = 10;
         $offset = ($currentPage - 1) * $itemsPerPage;
     
-        // Tìm kiếm hoặc hiển thị danh mục
         if (isset($_GET['keyword']) && !empty($_GET['keyword'])) {
             $keyword = $_GET['keyword'];
             $news = $newsModel->searchNews($keyword);
-            $totalNews = count($news); // Tổng số kết quả tìm kiếm
+            $totalNews = count($news);
         } elseif (isset($_GET['category_id']) && !empty($_GET['category_id'])) {
             $categoryId = $_GET['category_id'];
             $news = $newsModel->getNewsByCategory($categoryId);
-            $totalNews = count($news); // Tổng số tin theo danh mục
+            $totalNews = count($news);
         } else {
             $news = $newsModel->getPaginatedNews($itemsPerPage, $offset);
             $totalNews = $newsModel->getTotalNewsCount();

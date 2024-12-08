@@ -25,14 +25,12 @@ $controller->$action();
 
 <script>
 document.getElementById('searchForm').addEventListener('submit', function(e) {
-    e.preventDefault(); // Ngăn form gửi yêu cầu truyền thống
+    e.preventDefault();
     const keyword = document.getElementById('searchKeyword').value;
 
-    // Gửi yêu cầu AJAX đến server
     fetch(`?controller=home&action=index&ajax=true&keyword=${encodeURIComponent(keyword)}`)
         .then(response => response.text())
         .then(data => {
-            // Hiển thị kết quả trong div #newsResults
             document.getElementById('newsResults').innerHTML = data;
         })
         .catch(error => console.error('Có lỗi xảy ra:', error));

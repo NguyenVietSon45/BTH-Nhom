@@ -16,7 +16,6 @@
     <div class="container">
         <h1><a href="index.php?controller=home&action=index">Trang tin tức</a></h1>
         
-        <!-- Form Tìm kiếm -->
         <div class="search-form">
             <form method="GET" action="">
                 <input type="hidden" name="controller" value="home">
@@ -31,7 +30,6 @@
             </form>
         </div>
 
-        <!-- Thanh Category -->
         <div class="categories">
             <strong>Danh mục:</strong>
             <?php foreach ($categories as $category): ?>
@@ -43,7 +41,6 @@
             <?php endforeach; ?>
         </div>
 
-        <!-- Danh sách Tin tức -->
         <div class="news-list">
             <?php if (!empty($news)): ?>
                 <?php foreach ($news as $item): ?>
@@ -64,7 +61,6 @@
             <?php endif; ?>
         </div>
 
-        <!-- Phân Trang -->
         <nav>
             <ul class="pagination">
                 <?php for ($i = 1; $i <= $totalPages; $i++): ?>
